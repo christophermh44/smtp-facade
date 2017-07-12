@@ -78,7 +78,7 @@ class SmtpAuthentication {
 	public function getSessionLogin() {
 		if ($this->sessionGetCallback != null) {
 			return $this->sessionGetCallback();
-		} else {
+		} else {
 			if (session_status() == PHP_SESSION_NONE) {
 				session_start();
 			}
