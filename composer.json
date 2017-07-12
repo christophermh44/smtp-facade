@@ -1,8 +1,17 @@
 {
+    "name": "christophermh44/smtp-facade",
+    "description": "Sign in with SMTP tool",
     "require": {
         "phpmailer/phpmailer": "^5.2"
     },
     "autoload": {
     	"psr-4": {"SmtpFacade\\": "SmtpFacade/"}
-    }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Christopher Machicoane-Hurtaud",
+            "email": "christophermh44@gmail.com"
+        }
+    ]
 }
