@@ -1,7 +1,9 @@
 {
     "name": "christophermh44/smtp-facade",
     "description": "Sign in with SMTP tool",
+    "homepage": "https://github.com/christophermh44/smtp-facade",
     "require": {
+        "php": "^5.3.3 || ^7.0",
         "phpmailer/phpmailer": "^5.2"
     },
     "autoload": {
