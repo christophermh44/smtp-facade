@@ -3,9 +3,9 @@ namespace SmtpFacade;
 
 class SmtpAuthentication {
 	protected $settings = [];
-	protected $currentLogin = null;
 	protected $sessionCreationCallback = null;
 	protected $sessionDestroyCallback = null;
+	protected $sessionGetCallback = null;
 
 	const SESSION_FIELD = 'SMTP_AUTH_SESSION_LOGIN';
 
@@ -25,6 +25,10 @@ class SmtpAuthentication {
 
 	public function registerDestroySessionCallback($callback) {
 		$this->sessionDestroyCallback = $callback;
+	}
+
+	public function registerGetSessionCallback($callback) {
+		$this->sessionGetCallback = $callback;
 	}
 
 	public function authenticate($login, $password) {
@@ -58,7 +62,6 @@ class SmtpAuthentication {
 			}
 			$_SESSION[self::SESSION_FIELD] = $login;
 		}
-		$this->currentLogin = $login;
 	}
 
 	protected function destroySession() {
@@ -70,10 +73,16 @@ class SmtpAuthentication {
 			}
 			unset($_SESSION[self::SESSION_FIELD]);
 		}
-		$this->currentLogin = null;
 	}
 
 	public function getSessionLogin() {
-		return $this->currentLogin;
+		if ($this->sessionGetCallback != null) {
+			return $this->sessionGetCallback();
+		} else {
+			if (session_status() == PHP_SESSION_NONE) {
+				session_start();
+			}
+			return $_SESSION[self::SESSION_FIELD];
+		}
 	}
 }
