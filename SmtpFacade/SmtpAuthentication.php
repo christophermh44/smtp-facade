@@ -3,19 +3,27 @@ namespace SmtpFacade;
 
 class SmtpAuthentication {
 	protected $settings = [];
+	protected $sessionField = '';
 	protected $sessionCreationCallback = null;
 	protected $sessionDestroyCallback = null;
 	protected $sessionGetCallback = null;
 
-	const SESSION_FIELD = 'SMTP_AUTH_SESSION_LOGIN';
+	const DEFAULT_SESSION_FIELD = 'SMTP_AUTH_SESSION_LOGIN';
 
-	public function __construct($settings = null) {
+	public function __construct($sessionField = self::DEFAULT_SESSION_FIELD, $settings = null, $disableSessionInit = false) {
+		if (!$disableSessionInit) {
+			if (session_status() !== PHP_SESSION_ACTIVE) {
+				if (!headers_sent()) {
+					session_start();
+				}
+			}
+		}
 		if (!$settings) {
 			$settings = json_decode(file_get_contents(__DIR__.'/smtp-facade-conf/smtp.json'));
 		} else if (is_string($settings)) {
 			$settings = json_decode(file_get_contents($settings));
 		}
-
+		$this->sessionField = $sessionField;
 		$this->settings = $settings;
 	}
 
@@ -57,10 +65,7 @@ class SmtpAuthentication {
 		if ($this->sessionCreationCallback != null) {
 			$this->sessionCreationCallback($login);
 		} else {
-			if (session_status() == PHP_SESSION_NONE) {
-				session_start();
-			}
-			$_SESSION[self::SESSION_FIELD] = $login;
+			$_SESSION[$this->sessionField] = $login;
 		}
 	}
 
@@ -68,10 +73,7 @@ class SmtpAuthentication {
 		if ($this->sessionDestroyCallback != null) {
 			$this->sessionDestroyCallback();
 		} else {
-			if (session_status() == PHP_SESSION_NONE) {
-				session_start();
-			}
-			unset($_SESSION[self::SESSION_FIELD]);
+			unset($_SESSION[$this->sessionField]);
 		}
 	}
 
@@ -79,10 +81,7 @@ class SmtpAuthentication {
 		if ($this->sessionGetCallback != null) {
 			return $this->sessionGetCallback();
 		} else {
-			if (session_status() == PHP_SESSION_NONE) {
-				session_start();
-			}
-			return $_SESSION[self::SESSION_FIELD];
+			return $_SESSION[$this->sessionField];
 		}
 	}
 }
