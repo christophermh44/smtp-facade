@@ -8,7 +8,7 @@ Here, it is connected to GMail by default. You will have to check the domain of 
 ## Installation
 
 ```
-$ composer install christophermh44/smtp-facade dev-master
+$ composer require christophermh44/smtp-facade dev-master
 ```
 
 ## Example usage
