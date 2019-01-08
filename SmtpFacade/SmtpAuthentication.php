@@ -81,7 +81,7 @@ class SmtpAuthentication {
 		if ($this->sessionGetCallback != null) {
 			return $this->sessionGetCallback();
 		} else {
-			return $_SESSION[$this->sessionField];
+			return $_SESSION[$this->sessionField] ?? null;
 		}
 	}
 }
